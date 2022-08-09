@@ -164,6 +164,26 @@ fn bubble_down<T: PartialOrd>(slice: &mut [T], index: usize) {
     }
 }
 
+/// An iterator type to iterate upon a heap.
+///
+/// A complete iteration has the side effect of sorting the underlying
+/// slice in ascending order.
+///
+/// # Examples
+/// Basic usage:
+/// ```
+/// use heapify::*;
+/// let mut arr = [5, 7, 9];
+/// let iter = make_heap_iter(&mut arr);
+/// for item in iter {
+///     print!("{} ", item);
+/// }
+/// ```
+/// This will print:
+/// ``` text
+/// 9 7 5 
+/// ```
+#[derive(Debug)]
 pub struct HeapIterator<'a, T: PartialOrd> {
     heap: &'a mut [T],
 }
