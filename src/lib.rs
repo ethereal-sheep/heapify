@@ -181,7 +181,7 @@ fn bubble_down<T: PartialOrd>(slice: &mut [T], index: usize) {
 /// ```
 /// This will print:
 /// ``` text
-/// 9 7 5 
+/// 9 7 5
 /// ```
 #[derive(Debug)]
 pub struct HeapIterator<'a, T: PartialOrd> {
@@ -201,7 +201,7 @@ impl<'a, T: PartialOrd> core::iter::Iterator for HeapIterator<'a, T> {
                 let (left, right) = old.split_at_mut(n - 1);
                 core::ptr::write(&mut self.heap, left);
                 assert_eq!(right.len(), 1);
-                
+
                 Some(&mut right[0])
             }
         } else {
