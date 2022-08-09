@@ -9,3 +9,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.1] - 2022-08-10
 ### Added
 - HeapIterator to iterate over a heap
+- make_heap_iter() to construct a HeapIterator
