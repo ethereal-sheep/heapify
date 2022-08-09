@@ -288,7 +288,6 @@ mod tests {
     fn test_heap_iterator_mut() {
         let mut vec = vec![1, 2, 3, 4, 5, 6];
         let iter = make_heap_iter(&mut vec);
-        iter.size_hint();
         iter.for_each(|i| {
             if *i % 2 == 0 {
                 *i = 0
