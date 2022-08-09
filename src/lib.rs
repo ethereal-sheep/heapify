@@ -34,9 +34,24 @@
 /// ```
 pub fn make_heap<T: PartialOrd>(slice: &mut [T]) {
     let n = slice.len();
-    for i in (0..((n - 1) / 2)).rev() {
+    for i in (0..=((n - 1) / 2)).rev() {
         bubble_down(slice, i);
     }
+}
+
+/// Creates a `HeapIterator<T>` from a given slice.
+///
+/// # Examples
+///
+/// ```
+/// use heapify::*;
+/// let mut arr = [5, 7, 9];
+/// let mut iter = make_heap_iter(&mut arr);
+/// assert_eq!(iter.next().cloned(), Some(9));
+/// ```
+pub fn make_heap_iter<T: PartialOrd>(slice: &mut [T]) -> HeapIterator<'_, T> {
+    make_heap(slice);
+    HeapIterator { heap: slice }
 }
 
 /// Pushes an element into a heap.
@@ -149,6 +164,56 @@ fn bubble_down<T: PartialOrd>(slice: &mut [T], index: usize) {
     }
 }
 
+/// An iterator type to iterate upon a heap.
+///
+/// A complete iteration has the side effect of sorting the underlying
+/// slice in ascending order.
+///
+/// # Examples
+/// Basic usage:
+/// ```
+/// use heapify::*;
+/// let mut arr = [5, 7, 9];
+/// let iter = make_heap_iter(&mut arr);
+/// for item in iter {
+///     print!("{} ", item);
+/// }
+/// ```
+/// This will print:
+/// ``` text
+/// 9 7 5
+/// ```
+#[derive(Debug)]
+pub struct HeapIterator<'a, T: PartialOrd> {
+    heap: &'a mut [T],
+}
+
+impl<'a, T: PartialOrd> core::iter::Iterator for HeapIterator<'a, T> {
+    type Item = &'a mut T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let n = self.heap.len();
+        if n > 0 {
+            pop_heap(self.heap);
+
+            unsafe {
+                let old = core::ptr::read(&self.heap);
+                let (left, right) = old.split_at_mut(n - 1);
+                core::ptr::write(&mut self.heap, left);
+                assert_eq!(right.len(), 1);
+
+                Some(&mut right[0])
+            }
+        } else {
+            None
+        }
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        (self.heap.len(), Some(self.heap.len()))
+    }
+}
+
 #[cfg(test)]
 mod tests {
 
@@ -199,5 +264,36 @@ mod tests {
 
         pop_heap(&mut vec);
         assert_eq!(vec.pop(), Some(5));
+    }
+
+    #[test]
+    fn test_heap_iterator_next_value() {
+        let mut vec = vec![5, 7, 9];
+        let mut iter = make_heap_iter(&mut vec);
+
+        assert_eq!(iter.next().cloned(), Some(9));
+        assert_eq!(iter.next().cloned(), Some(7));
+        assert_eq!(iter.next().cloned(), Some(5));
+    }
+
+    #[test]
+    fn test_heap_iterator_sorted() {
+        let mut vec = vec![1, 9, 2, 8, 3, 7];
+        let iter = make_heap_iter(&mut vec);
+        for _ in iter {}
+        assert_eq!(vec, vec![1, 2, 3, 7, 8, 9]);
+    }
+
+    #[test]
+    fn test_heap_iterator_mut() {
+        let mut vec = vec![1, 2, 3, 4, 5, 6];
+        let iter = make_heap_iter(&mut vec);
+        iter.for_each(|i| {
+            if *i % 2 == 0 {
+                *i = 0
+            }
+        });
+
+        assert_eq!(vec, vec![1, 0, 3, 0, 5, 0]);
     }
 }
