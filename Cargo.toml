@@ -1,0 +1,13 @@
+[package]
+name = "heapify"
+version = "0.1.0"
+edition = "2021"
+description = "Convenience functions to turn slices into max-heaps."
+repository = "https://github.com/ethereal-sheep/heapify"
+license = "MIT OR Apache-2.0"
+keywords = ["heap", "priority", "slice"]
+categories = ["algorithms", "no-std"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
