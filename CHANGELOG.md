@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.1] - 2022-08-10
+## [0.2.0] - 2022-08-10
 ### Added
-- HeapIterator to iterate over a heap
-- make_heap_iter() to construct a HeapIterator
+- `HeapIterator` and `PredHeapIterator` to iterate over a heap
+- `make_heap_iter()` to construct a `HeapIterator`
+- `make_heap_iter_with()` to construct a `PredHeapIterator` with a predicate
+- `make_heap_with()`, `pop_heap_with()`, and `push_heap_with()` variants to operate on heap slices with a predicate

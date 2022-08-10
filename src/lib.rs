@@ -128,15 +128,15 @@ pub fn push_heap<T: PartialOrd>(slice: &mut [T]) {
 /// ```
 /// use heapify::*;
 /// let mut vec = vec![5, 7, 9];
-/// make_heap_with(&mut arr, |lhs, rhs| rhs.partial_cmp(lhs));
+/// make_heap_with(&mut vec, |lhs, rhs| rhs.partial_cmp(lhs));
 /// assert_eq!(peek_heap(&mut vec), Some(&5));
 ///
 /// vec.push(8);
-/// push_heap_with(&mut arr, |lhs, rhs| rhs.partial_cmp(lhs));
+/// push_heap_with(&mut vec, |lhs, rhs| rhs.partial_cmp(lhs));
 /// assert_eq!(peek_heap(&mut vec), Some(&5));
 ///
 /// vec.push(3);
-/// push_heap_with(&mut arr, |lhs, rhs| rhs.partial_cmp(lhs));
+/// push_heap_with(&mut vec, |lhs, rhs| rhs.partial_cmp(lhs));
 /// assert_eq!(peek_heap(&mut vec), Some(&3));
 /// ```
 pub fn push_heap_with<T>(slice: &mut [T], pred: fn(&T, &T) -> Option<Ordering>) {
@@ -182,16 +182,16 @@ pub fn pop_heap<T: PartialOrd>(slice: &mut [T]) {
 /// ```
 /// use heapify::*;
 /// let mut vec = vec![5, 7, 9];
-/// make_heap_with(&mut arr, |lhs, rhs| rhs.partial_cmp(lhs));
-/// assert_eq!(peek_heap(&mut vec), Some(&9));
+/// make_heap_with(&mut vec, |lhs, rhs| rhs.partial_cmp(lhs));
+/// assert_eq!(peek_heap(&mut vec), Some(&5));
 ///
-/// pop_heap_with(&mut arr, |lhs, rhs| rhs.partial_cmp(lhs));
+/// pop_heap_with(&mut vec, |lhs, rhs| rhs.partial_cmp(lhs));
 /// assert_eq!(vec.pop(), Some(5));
 ///
-/// pop_heap_with(&mut arr, |lhs, rhs| rhs.partial_cmp(lhs));
+/// pop_heap_with(&mut vec, |lhs, rhs| rhs.partial_cmp(lhs));
 /// assert_eq!(vec.pop(), Some(7));
 ///
-/// pop_heap_with(&mut arr, |lhs, rhs| rhs.partial_cmp(lhs));
+/// pop_heap_with(&mut vec, |lhs, rhs| rhs.partial_cmp(lhs));
 /// assert_eq!(vec.pop(), Some(9));
 /// ```
 pub fn pop_heap_with<T>(slice: &mut [T], pred: fn(&T, &T) -> Option<Ordering>) {
@@ -281,7 +281,7 @@ fn bubble_down<T>(slice: &mut [T], index: usize, pred: fn(&T, &T) -> Option<Orde
 /// ```
 #[derive(Debug)]
 pub struct HeapIterator<'a, T: PartialOrd> {
-    heap: &'a mut [T]
+    heap: &'a mut [T],
 }
 
 impl<'a, T: PartialOrd> core::iter::Iterator for HeapIterator<'a, T> {
@@ -311,7 +311,7 @@ impl<'a, T: PartialOrd> core::iter::Iterator for HeapIterator<'a, T> {
 }
 
 /// An iterator type to iterate upon a heap with a given predicate.
-/// 
+///
 /// Larger than HeapIterator due to storing of the function pointer predicate.
 ///
 /// A complete iteration has the side effect of sorting the underlying
@@ -333,7 +333,7 @@ impl<'a, T: PartialOrd> core::iter::Iterator for HeapIterator<'a, T> {
 /// ```
 pub struct PredHeapIterator<'a, T> {
     heap: &'a mut [T],
-    pred: fn(&T, &T) -> Option<Ordering>
+    pred: fn(&T, &T) -> Option<Ordering>,
 }
 
 impl<'a, T> core::iter::Iterator for PredHeapIterator<'a, T> {
@@ -437,7 +437,7 @@ mod tests {
         pop_heap(&mut vec);
         assert_eq!(vec.pop(), Some(5));
     }
-    
+
     #[test]
     fn test_pop_heap_with() {
         let mut vec = vec![5, 7, 9];
